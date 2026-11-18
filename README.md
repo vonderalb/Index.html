@@ -34,3 +34,22 @@ Nach Änderungen alle Seiten neu erzeugen:
 | `/?page_id=48`     | `/ueber-uns.html`                 |
 | `/?page_id=56`     | `/sitemap.html`                   |
 | `/?page_id=58`     | `/impressum.html`                 |
+
+## Livegang
+
+1. **Backup** der bestehenden `.htaccess` und des WordPress-Ordners anlegen.
+2. Alle `.html`-Dateien, `assets/`, `sitemap.xml` und `robots.txt` per FTP ins
+   Hauptverzeichnis laden (dort, wo `wp-config.php` liegt). `tools/` und
+   `README.md` werden nicht benötigt.
+3. Den Inhalt der mitgelieferten `.htaccess` **oberhalb** von `# BEGIN WordPress`
+   in die bestehende `.htaccess` einfügen – den WordPress-Block nicht löschen,
+   er wird für `/wp-content/` (Bilder) weiterhin gebraucht.
+4. Testen:
+   - `https://metallschilder24.com/` zeigt die neue Startseite
+   - `https://metallschilder24.com/?page_id=7` leitet auf `/typenschilder.html`
+   - `https://metallschilder24.com/?page_id=34` leitet auf `/befestigungen.html#annieten`
+   - `https://metallschilder24.com/wp-admin/` funktioniert weiterhin
+5. In der Google Search Console die neue `sitemap.xml` einreichen.
+
+Bei einem Fehler 500 nach dem Einfügen: Block wieder entfernen und beim Hoster
+prüfen, ob `mod_rewrite` aktiv ist und Apache 2.4 läuft (für das Flag `QSD`).

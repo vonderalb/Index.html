@@ -1,0 +1,110 @@
+# =====================================================================
+#  metallschilder24.com – Weiterleitungen und Grundeinstellungen
+#  Diesen Block OBERHALB von "# BEGIN WordPress" einfügen (falls vorhanden).
+#  Voraussetzung: Apache 2.4 mit mod_rewrite.
+# =====================================================================
+
+# Startseite: neue index.html vor WordPress' index.php ausliefern
+DirectoryIndex index.html index.php
+
+AddDefaultCharset UTF-8
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+# Hinweis: http→https und www→ohne www leitet der Server bereits weiter
+# (geprüft am 18.11.2026), daher hier bewusst keine eigene Regel dafür.
+
+# --- Alte WordPress-Seiten (?page_id=…) auf die neuen Seiten -----------
+# QSD entfernt die alte Abfrage (?page_id=…) aus der neuen Adresse.
+RewriteCond %{QUERY_STRING} (^|&)page_id=7(&|$)
+RewriteRule ^(index\.php)?$ /typenschilder.html [R=301,L,QSD]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=9(&|$)
+RewriteRule ^(index\.php)?$ /typenschilder-bedruckt.html [R=301,L,QSD]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=11(&|$)
+RewriteRule ^(index\.php)?$ /typenschilder-graviert.html [R=301,L,QSD]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=17(&|$)
+RewriteRule ^(index\.php)?$ /weitere-schilder.html [R=301,L,QSD]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=19(&|$)
+RewriteRule ^(index\.php)?$ /firmenschilder.html [R=301,L,QSD]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=21(&|$)
+RewriteRule ^(index\.php)?$ /hinweisschilder.html [R=301,L,QSD]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=32(&|$)
+RewriteRule ^(index\.php)?$ /befestigungen.html [R=301,L,QSD]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=34(&|$)
+RewriteRule ^(index\.php)?$ /befestigungen.html#annieten [R=301,L,QSD,NE]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=36(&|$)
+RewriteRule ^(index\.php)?$ /befestigungen.html#anschrauben [R=301,L,QSD,NE]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=38(&|$)
+RewriteRule ^(index\.php)?$ /befestigungen.html#selbstklebend [R=301,L,QSD,NE]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=40(&|$)
+RewriteRule ^(index\.php)?$ /befestigungen.html#befestigungssatz [R=301,L,QSD,NE]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=42(&|$)
+RewriteRule ^(index\.php)?$ /kundenmeinungen.html [R=301,L,QSD]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=44(&|$)
+RewriteRule ^(index\.php)?$ /kontakt.html [R=301,L,QSD]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=48(&|$)
+RewriteRule ^(index\.php)?$ /ueber-uns.html [R=301,L,QSD]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=50(&|$)
+RewriteRule ^(index\.php)?$ / [R=301,L,QSD]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=56(&|$)
+RewriteRule ^(index\.php)?$ /sitemap.html [R=301,L,QSD]
+
+RewriteCond %{QUERY_STRING} (^|&)page_id=58(&|$)
+RewriteRule ^(index\.php)?$ /impressum.html [R=301,L,QSD]
+
+# /index.html → / (eine einzige Adresse für die Startseite)
+RewriteCond %{THE_REQUEST} \s/index\.html[\s?] [NC]
+RewriteRule ^index\.html$ / [R=301,L]
+</IfModule>
+
+# --- Komprimierung -----------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript application/json image/svg+xml application/xml text/xml text/plain
+</IfModule>
+
+# --- Browser-Cache -----------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 hour"
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/css "access plus 1 week"
+  ExpiresByType application/javascript "access plus 1 week"
+  ExpiresByType text/javascript "access plus 1 week"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/gif "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 month"
+</IfModule>
+
+# --- Sicherheits-Header ------------------------------------------------
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
+# --- Interne Dateien nicht ausliefern ----------------------------------
+<FilesMatch "^(README\.md|\.git.*)$">
+  Require all denied
+</FilesMatch>
+RedirectMatch 404 ^/(tools|\.git)(/|$)
